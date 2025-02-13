@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Path Recommendation System</title>
+    <link rel="stylesheet" href="app.component.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="logo">CareerPathAI</div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Career Paths</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="login.html" class="btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Find Your Ideal Career Path</h1>
+        <p>Upload your resume and get AI-driven recommendations for your future career.</p>
+        <a href="upload.html" class="btn">Get Started</a>
+    </section>
+
+    <!-- Career Recommendation Form -->
+    <section class="career-form">
+        <h2>Find Your Career Fit</h2>
+        <form action="recommend.php" method="POST">
+            <label for="career">Choose a career path:</label>
+            <select id="career" name="career">
+                <option value="software">Software Developer</option>
+                <option value="data-science">Data Scientist</option>
+                <option value="marketing">Marketing Specialist</option>
+                <option value="healthcare">Healthcare Professional</option>
+            </select>
+
+            <label for="resume">Upload Your Resume:</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,.docx">
+
+            <button type="submit" class="btn">Get Recommendations</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Career Path Recommendation System | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

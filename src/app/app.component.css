@@ -1,0 +1,130 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Navigation Bar */
+header {
+    background: #0073e6;
+    padding: 15px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ffdd57;
+}
+
+.btn {
+    background: #ffdd57;
+    color: #333;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #ffc107;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJYAqAMBIgACEQEDEQH/xAAaAAEBAQADAQAAAAAAAAAAAAAABgUCAwQH/8QAKRABAAICAgAGAQQDAQAAAAAAAAEDAgQFEQYSEyExQTIiUWGBFBVxB//EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD4aAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACxr8L8Fp3U6PP89dpcjNGG1djhq+eqrCcfP6fm80TNk4TEx1j13MY9yCOFHy3G8Td4fy5rhK97Xqq3Y1LKty7G2c/NhOWOcTjjj1+GXePv13HunAAAAAAAAAAAAAAAAAAAFXqcpxHPaVGj4ott09rXwivW5amr1J9PH4rtwiYnKIj2jKPePaJ7j4lGhxHCcrzVllfEcdtbuVcebOKKpz8sfz18fAPf4i5vX2tTX4fhqM9fh9TPLOvGyY9TYsn2m2zr280xERER7Yx7fzOA3vBvD1cr4v0OK5HCzGvO6cbqvxynyxMzh/Ez15f7e/HmPC/K+/K+HbdbYxyjCnDhbfSxsxmev1xZ5/1Y/MTH5d9T+4JIaPiHjP9Nzu/xnq+r/i351Rn113ET9x9T+8fUs4AAAAAAAAAAAAAAAAFR/5/qUbHI8jddq1bd2nxl+zra9uMZ4WW4xHXeM/l1Ezl19+V0cv4s5HmOMo4yaNPVqxum2zHQ14ojYsnqIyzxx6iZjr26iPlj8fvbXGbtO7oX50bNGXnrtwnqcZVOl4s4anZ/wBvb4drw52mJyoz17PLq5W/VmdMxPU4/PWMxjM/UA83jrbu1fHWxs0X+Xe1sqJsuw+Y2cK8Isy/76mOX9u6zxnqU3ZchxHh3T0eZtmcrN71crYwzn3yyqry/TXPfvHz19dJO2zO63O23PLOzPKcss8p7nKZ+ZmfuXAHKyzO2zKy3PLOzOZyyyynucpn5mZcQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==') no-repeat center center/cover;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.hero .btn {
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
+/* Career Recommendation Form */
+.career-form {
+    background: white;
+    padding: 40px;
+    margin: 50px auto;
+    width: 50%;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.career-form h2 {
+    margin-bottom: 20px;
+}
+
+.career-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.career-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.career-form select, 
+.career-form input[type="file"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.career-form .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background: #0073e6;
+    color: white;
+    padding: 15px;
+    margin-top: 50px;
+}
