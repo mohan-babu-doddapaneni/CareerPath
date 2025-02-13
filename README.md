@@ -1,114 +1,27 @@
-Career Path Recommendation System
+# Cprs
 
-Overview
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.4.
 
-The Career Path Recommendation System is a web application that helps users determine their suitability for various career paths based on their resumes and skills. The system analyzes user input, identifies missing skills, and provides personalized career suggestions along with recommended courses and certifications.
+## Development server
 
-Features
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-User Registration & Login: Secure authentication system.
+## Code scaffolding
 
-Career Path Selection: Users can choose a desired career path (e.g., Software Developer, Data Scientist).
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-Resume Upload & Analysis: Extracts skills from resumes and matches them to career requirements.
+## Build
 
-Suitability Score: Rates users on a scale of 1-10 based on their skills and experience.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-Skill Gap Analysis: Identifies missing skills and suggests improvements.
+## Running unit tests
 
-Course Recommendations: Provides relevant online courses and certifications.
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-Responsive UI: User-friendly interface built with HTML, CSS, and JavaScript.
+## Running end-to-end tests
 
-Tech Stack
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-Frontend: HTML, CSS, JavaScript, Bootstrap
+## Further help
 
-Backend: Node.js, Express.js
-
-Database: MongoDB (or any other preferred database)
-
-AI & NLP: Python (NLTK, spaCy for resume parsing)
-
-Deployment: Docker, GitHub Actions, AWS/GCP
-
-Installation
-
-Prerequisites
-
-Ensure you have the following installed:
-
-Node.js & npm
-
-MongoDB (if using a local database)
-
-Steps to Run Locally
-
-# Clone the repository
-git clone https://github.com/yourusername/career-path-recommendation.git
-cd career-path-recommendation
-
-# Install dependencies
-npm install
-
-# Start the backend server
-npm start
-
-Running the Frontend
-
-If using a separate frontend:
-
-cd frontend
-npm install
-npm start
-
-Usage
-
-Register or log in to your account.
-
-Select a career path from the dropdown menu.
-
-Upload your resume (PDF/DOC format).
-
-View your suitability score and missing skills.
-
-Explore recommended courses to enhance your skills.
-
-Navigate to course links to start learning.
-
-Deployment
-
-To deploy using Docker:
-
-# Build Docker Image
-docker build -t career-path-app .
-
-# Run the container
-docker run -p 3000:3000 career-path-app
-
-Contributing
-
-Fork the repository
-
-Create a feature branch (git checkout -b feature-branch)
-
-Commit your changes (git commit -m 'Add new feature')
-
-Push to the branch (git push origin feature-branch)
-
-Open a Pull Request
-
-License
-
-This project is licensed under the MIT License.
-
-Contact
-
-For any questions or suggestions, please contact:
-
-Your Name
-
-Email: your.email@example.com
-
-GitHub: yourusername
-
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
