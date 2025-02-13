@@ -1,27 +1,87 @@
-# Cprs
+# Career Path Recommendation System
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.4.
+## Introduction
+The **Career Path Recommendation System** is an AI-driven web application designed to assist users in evaluating their career suitability, identifying skill gaps, and recommending relevant online courses and certifications.
 
-## Development server
+## Features
+- **User Authentication** (Email/Password)
+- **Resume Analysis** (Extract skills, match career paths)
+- **AI-Powered Recommendations** (Skill gaps, improvement suggestions)
+- **Job Portal Integration** (Real-time job updates)
+- **Interactive Dashboards** (Career insights, progress tracking)
+- **Secure Data Handling** (Privacy compliance)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Tech Stack
+| Category      | Technology |
+|--------------|------------|
+| **Frontend** | Angular.js, Bootstrap, CSS |
+| **Backend**  | Python, Flask |
+| **ML/NLP**   | Scikit-learn, NLTK, Pandas |
+| **Database** | MySQL |
+| **Hosting**  | AWS |
+| **Version Control** | GitHub |
+| **Project Management** | Trello/Jira |
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Prerequisites
+- Node.js
+- Python 3
+- MySQL Database
+- Git
 
-## Build
+### Steps to Run the Project
+1. **Clone the Repository**
+   ```sh
+   git clone https://github.com/your-repo-url.git
+   cd career-path-recommendation
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+2. **Backend Setup**
+   ```sh
+   cd backend
+   python -m venv env
+   source env/bin/activate  # On Windows use `env\Scripts\activate`
+   pip install -r requirements.txt
+   python app.py
+   ```
 
-## Running unit tests
+3. **Frontend Setup**
+   ```sh
+   cd frontend
+   npm install
+   ng serve --open
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Usage
+1. **Sign Up/Login**
+2. **Upload Resume** (Supports .pdf, .docx formats)
+3. **View Career Recommendations**
+4. **Follow Skill Improvement Suggestions**
+5. **Apply for Jobs via Integrated Portals**
 
-## Running end-to-end tests
+## Folder Structure
+```
+career-path-recommendation/
+│── backend/
+│   ├── app.py
+│   ├── models/
+│   ├── routes/
+│   ├── static/
+│   ├── templates/
+│── frontend/
+│   ├── src/
+│   ├── angular.json
+│── README.md
+│── requirements.txt
+│── package.json
+│── .gitignore
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Contributors
+- **Poornachandra Reddy Ramireddy**
+- **Mohan Babu Doddapaneni**
+- **Shivaprasad Yelijala**
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
