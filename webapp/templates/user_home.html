@@ -1,0 +1,16 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+
+{% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+		<h5>Welcome User</h5>
+
+
+
+{% endblock %}
