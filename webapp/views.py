@@ -6,6 +6,8 @@ from django.contrib import messages
 from .models import *
 from .GetHash import get_hash
 
+def home(request):
+    return render(request, "index.html")
 
 def register(request):
     if request.method == "POST":
@@ -42,10 +44,21 @@ def login_user(request):
             messages.error(request, "Invalid email or password!")
 
     return render(request, "login.html")
-
+    
+def dashboard(request):
+    return render(request, "user_home.html")
+    
 def userlogoutdef(request):
     try:
         del request.session['email']
     except:
         pass
     return render(request, 'login.html')
+
+def userhomedef(request):
+    if "email" in request.session:
+        email=request.session["email"]
+        d=Users.objects.filter(username__exact=email)
+        return render(request, 'user_home.html',{'data': d[0]})
+    else:
+        return redirect('userlogoutdef')
