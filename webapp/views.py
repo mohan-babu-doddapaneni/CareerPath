@@ -1,19 +1,11 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
-from . models import *
-
+from .models import *
 from .GetHash import get_hash
 
-
-def home(request):
-    
-    return render(request, "index.html")
 
 def register(request):
     if request.method == "POST":
@@ -30,8 +22,6 @@ def register(request):
         return redirect("login")
 
     return render(request, "register.html")
-
-
 
 
 def login_user(request):
@@ -53,28 +43,9 @@ def login_user(request):
 
     return render(request, "login.html")
 
-
-
-def dashboard(request):
-    return render(request, "user_home.html")
-
-
-
 def userlogoutdef(request):
     try:
         del request.session['email']
     except:
         pass
     return render(request, 'login.html')
-
-
-def userhomedef(request):
-    if "email" in request.session:
-        email=request.session["email"]
-        d=Users.objects.filter(username__exact=email)
-
-       
-        return render(request, 'user_home.html',{'data': d[0]})
-
-    else:
-        return redirect('userlogoutdef')
