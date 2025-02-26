@@ -14,74 +14,18 @@ The **Career Path Recommendation System** is an AI-driven web application design
 ## Tech Stack
 | Category      | Technology |
 |--------------|------------|
-| **Frontend** | Angular.js, Bootstrap, CSS |
-| **Backend**  | Python, Flask |
+| **Frontend** | HTML, Bootstrap, CSS |
+| **Backend**  | Django, Flask |
 | **ML/NLP**   | Scikit-learn, NLTK, Pandas |
 | **Database** | MySQL |
 | **Hosting**  | AWS |
 | **Version Control** | GitHub |
-| **Project Management** | Trello/Jira |
+| **Project Management** | Jira |
 
 ## Installation
 
 ### Prerequisites
-- Node.js
 - Python 3
+- Django
 - MySQL Database
 - Git
-
-### Steps to Run the Project
-1. **Clone the Repository**
-   ```sh
-   git clone https://github.com/your-repo-url.git
-   cd career-path-recommendation
-   ```
-
-2. **Backend Setup**
-   ```sh
-   cd backend
-   python -m venv env
-   source env/bin/activate  # On Windows use `env\Scripts\activate`
-   pip install -r requirements.txt
-   python app.py
-   ```
-
-3. **Frontend Setup**
-   ```sh
-   cd frontend
-   npm install
-   ng serve --open
-   ```
-
-## Usage
-1. **Sign Up/Login**
-2. **Upload Resume** (Supports .pdf, .docx formats)
-3. **View Career Recommendations**
-4. **Follow Skill Improvement Suggestions**
-5. **Apply for Jobs via Integrated Portals**
-
-## Folder Structure
-```
-career-path-recommendation/
-│── backend/
-│   ├── app.py
-│   ├── models/
-│   ├── routes/
-│   ├── static/
-│   ├── templates/
-│── frontend/
-│   ├── src/
-│   ├── angular.json
-│── README.md
-│── requirements.txt
-│── package.json
-│── .gitignore
-```
-
-## Contributors
-- **Poornachandra Reddy Ramireddy**
-- **Mohan Babu Doddapaneni**
-- **Shivaprasad Yelijala**
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
