@@ -29,3 +29,5 @@ The **Career Path Recommendation System** is an AI-driven web application design
 - Django
 - MySQL Database
 - Git
+
+## Team
