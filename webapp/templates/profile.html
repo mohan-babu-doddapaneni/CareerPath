@@ -1,0 +1,120 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+<center>
+<table width="76%">
+<tr>
+	<td><a href="/vieweducation"><h4><font size="" color="#33cc66"><i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;Education</font></h4></a></td>
+	<td><a href="/viewworkexperience"><h4><font size="" color="#0033ff"><i class="fa fa-briefcase" aria-hidden="true"></i>&nbsp;Work Experience</h4></a></td>
+	<td><a href="/viewskills"><h4><font size="" color="#cc0000"><i class="fa fa-stack-overflow" aria-hidden="true"></i>&nbsp;Skils</h4></a></td>
+</tr>
+</table>
+
+{% if st1 %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Education Details</h2>
+
+    {% if educations %}
+    <div class="row">
+        {% for education in educations %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ education.degree }}</h5>
+                    <h6 class="card-subtitle text-muted">{{ education.institution }}</h6>
+                    <p class="mt-2">
+                        <span class="badge bg-primary">{{ education.start_year|date:"Y" }}</span> 
+                        ➝  
+                        <span class="badge {% if education.end_year %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if education.end_year %}{{ education.end_year|date:"Y" }}{% else %}Present{% endif %}
+                        </span>
+                    </p>
+                    <p><strong>Score:</strong> {{ education.score }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="alert alert-info text-center">No education details added yet.</p>
+
+	{% endif %}
+	<a href="/addeducation"><h5><font size="" color="#6666cc">Add Education</font></h2></a>	
+
+</div>
+{% endif %}
+
+
+
+{% if st2 %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Work Experience</h2>
+
+    {% if experiences %}
+    <div class="row">
+        {% for experience in experiences %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ experience.job_title }}</h5>
+                    <h6 class="card-subtitle text-muted">{{ experience.company }}</h6>
+                    <p class="mt-2">
+                        <span class="badge bg-primary">{{ experience.start_date|date:"M Y" }}</span> 
+                        ➝  
+                        <span class="badge {% if experience.end_date %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if experience.end_date %}{{ experience.end_date|date:"M Y" }}{% else %}Present{% endif %}
+                        </span>
+                    </p>
+                    <p class="text-muted"><strong>Experience:</strong> {{ experience.experience|default:"No details provided" }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="alert alert-info text-center">No work experience added yet.</p>
+    {% endif %}
+<a href="/addworkexperience"><h5><font size="" color="#6666cc">Add work experience </font></h2></a>	
+
+
+</div>
+{% endif %}
+
+{% if st3 %}
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Skills</h2>
+
+    {% if skills %}
+    <div class="row">
+        {% for skill in skills %}
+        <div class="col-md-6 mb-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ skill.skills }}</h5>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+
+    <p class="alert alert-info text-center">No skills added yet.</p>
+    {% endif %}
+	<br>
+<a href="/addskills"><h5><font size="" color="#6666cc">Add Skills</font></h2></a>	
+
+
+</div>
+
+
+{% endif %}
+
+
+{% endblock %}
