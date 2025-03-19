@@ -47,6 +47,12 @@ def login_user(request):
     
 def dashboard(request):
     return render(request, "user_home.html")
+
+def profile(request):
+    if "email" in request.session:
+        return render(request, "profile.html")
+    else:
+        return redirect('userlogoutdef')
     
 def userlogoutdef(request):
     try:
@@ -60,5 +66,69 @@ def userhomedef(request):
         email=request.session["email"]
         d=Users.objects.filter(username__exact=email)
         return render(request, 'user_home.html',{'data': d[0]})
+    else:
+        return redirect('userlogoutdef')
+
+def addeducation(request):
+    if request.method=='POST':
+        email=request.session["email"]
+        degree=request.POST['degree']
+        institution=request.POST['institution']
+        start_year=request.POST['start_year']
+        end_year=request.POST['end_year']
+        score=request.POST['score']
+        d=Education(username=email, degree=degree, institution=institution, start_year=start_year, end_year=end_year, score=score)
+        d.save()
+        return render(request, 'addeducation.html',{'msg': 'Education data added !!'})
+    else:
+        return render(request, 'addeducation.html'  )
+
+
+def addworkexperience(request):
+    if request.method=='POST':
+        email=request.session["email"]
+        company=request.POST['company']
+        job_title=request.POST['job_title']
+        experience=request.POST['experience']
+        start_date=request.POST['start_date']
+        end_date=request.POST['end_date']
+        d=WorkExperience(username=email, job_title=job_title, company=company, start_date=start_date, end_date=end_date, experience=experience)
+        d.save()
+        return render(request, 'addworkexperience.html',{'msg': 'Work experience data added !!'})
+    else:
+        return render(request, 'addworkexperience.html'  )
+
+
+def addskills(request):
+    if request.method=='POST':
+        email=request.session["email"]
+        skills=request.POST['skills']
+        d=Skills(username=email, skills=skills)
+        d.save()
+        return render(request, 'addskills.html',{'msg': 'Skills data added !!'})
+    else:
+        return render(request, 'addskills.html'  )
+
+def vieweducation(request):
+    if "email" in request.session:
+        email=request.session["email"]
+        d=Education.objects.filter(username__exact=email)
+        return render(request, 'profile.html',{'educations': d, 'st1':True})
+    else:
+        return redirect('userlogoutdef')
+
+def viewworkexperience(request):
+    if "email" in request.session:
+        email=request.session["email"]
+        d=WorkExperience.objects.filter(username__exact=email)
+        return render(request, 'profile.html',{'experiences': d, 'st2':True})
+    else:
+        return redirect('userlogoutdef')
+
+def viewskills(request):
+    if "email" in request.session:
+        email=request.session["email"]
+        d=Skills.objects.filter(username__exact=email)
+        return render(request, 'profile.html',{'skills': d, 'st3':True})
     else:
         return redirect('userlogoutdef')
