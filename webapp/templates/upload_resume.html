@@ -1,0 +1,52 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+
+{% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+
+<center>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Resume</title>
+</head>
+<body>
+    <h2>Upload Resume</h2>
+	
+		<form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+
+		<input class="form-control"   type="hidden" value="{{request.session.email}}" name="username" required>
+        <br>
+        <table><tr><td>
+		<label><b>Upload File:</label>
+        <input class="form-control" type="file" name="file" accept=".docx" required>
+<td><br>
+        <button class="form-control"   type="submit">Upload</button>
+</table>
+	</form>
+<br>
+    <h4>Uploaded Resumes</h3>
+<table id="tab" >
+        {% for resume in resumes %}
+          <tr><td>  {{ resume.username }} <td> <a href="{{ resume.file.url }}" target="_blank">{{ resume.file.name }}</a><td>
+		  <form method="Delete" action="/deleteresume/">
+						 <button class="form-control"   type="submit">Delete </button>
+          </form>
+        {% endfor %}
+
+		</table>
+    </ul>
+</body>
+</html>
+
+
+
+{% endblock %}

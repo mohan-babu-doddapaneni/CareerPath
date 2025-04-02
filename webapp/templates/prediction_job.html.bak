@@ -1,0 +1,51 @@
+{% extends 'user_base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<h5>Career Sense based on the skills</h5>
+
+<form method="GET" action="/analyse_skillset/">
+    <table id="tab">
+        <tr>
+            <th>Best matched career role for you</th>
+            <td>
+                <b>{{best}}</b>
+			
+            </td>
+        </tr>
+    </table>
+</form>
+<br>
+
+<center>
+<table id="tab" width="70%">
+<tr><th>Role<th>Matching %<th>
+{% for key, value in scores.items %}
+<tr>
+    <td><b>{{ key }}</b></td>
+    <td>{{ value }}%</td>
+
+	<td>
+			
+			<form method="get" action="/analyse_skillset/">
+			<input type="hidden" name="career" value="{{key}}">
+
+			<input type="submit" value="View Analysis">
+
+		</form>
+</tr>
+{% endfor %}
+
+
+</table>
+
+
+<br><br><br><br><br><br><br><br>
+
+{% endblock %}
