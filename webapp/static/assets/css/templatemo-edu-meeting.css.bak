@@ -44,6 +44,21 @@ figure, header, nav, section, article, aside, footer, figcaption {
   outline: 0;
 }
 
+.card {
+    transition: 0.3s;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    color: #333;
+}
+
+
 .clearfix:after {
   content: ".";
   display: block;
@@ -207,6 +222,13 @@ header
 */
 
 input[type="text"] {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside the input */
+    border: 2px solid #ccc; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: border-color 0.3s; /* Smooth transition */
+}input[type="textarea"] {
     width: 100%; /* Full width */
     padding: 10px; /* Padding inside the input */
     border: 2px solid #ccc; /* Border color */
@@ -1490,8 +1512,8 @@ section.heading-page {
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  padding-top: 130px;
-  padding-bottom: 70px;
+  padding-top: 140px;
+  padding-bottom: 80px;
   text-align: center;
 }
 

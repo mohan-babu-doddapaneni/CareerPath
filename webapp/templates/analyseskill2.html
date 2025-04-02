@@ -1,0 +1,83 @@
+{% extends 'user_base.html' %}
+
+{% block content %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+<body>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<h5>Analyse Skill Set</h5>
+
+<table align="right" >
+<tr>
+	<td><a href="/prediction_job"><h4><u>Back</b></a></td>
+</tr>
+</table>
+
+
+<br>
+{% if stz %}
+
+<table id="tab">
+<tr>
+	<td><h5>Skills you have</td>
+	<td>{{user_skills}}</td>
+</tr>
+<tr>
+	<td><h5>Required Skills</td>
+	<td>{{req_skills}}</td>
+</tr>
+</table><br><br>
+
+<center>
+
+
+<table width="50%">
+<tr>
+	<td>
+		<h2>Skills Matched</h4>
+  <div class="w3-light-grey w3-round-xlarge">
+    <div class="w3-container w3-blue w3-round-xlarge" style="width:{{ green_status|floatformat:2 }}%"><font size="" color="black">{{ green_status|floatformat:2 }}%  </font></div> 
+
+
+  </div>
+</div></td>
+<tr>
+	<td>
+		<h2>Skills Mismatched</h4>
+  <div class="w3-light-grey w3-round-xlarge">
+    <div class="w3-container w3-red w3-round-xlarge" style="width:{{ red_status|floatformat:2 }}%"><font size="" color="black">{{ red_status|floatformat:2 }}% </div>
+
+  </div>
+</div></td>
+
+</table>
+<br><br>
+<table id="tab">
+
+{% for d1 in tot_data %}
+<tr>
+	<td><b>Advanced Concepts to learn</td>
+	<td>{{d1.AdvancedConcepts}}</td>
+</tr>
+<tr>
+	<td><b>Suggested Certifications</td>
+	<td>{{d1.Certifications}}</td>
+</tr>
+
+{% endfor %}
+</table>
+
+
+
+{% endif %}
+
+<br><br><br><br><br><br><br><br>
+
+{% endblock %}

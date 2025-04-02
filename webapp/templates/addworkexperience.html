@@ -1,0 +1,80 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+{{msg}}
+<style>
+    
+        form {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 12px #aaa;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<table align="right">
+<tr>
+	<td><a href="/viewworkexperience"><h5>Back</a></td>
+</tr>
+</table>
+<table width="100%"><tr><td valign="top">
+    <h2>Add Education Data</h2><br>
+    <form method="POST" action="/addworkexperience/">
+        {% csrf_token %}
+<table width="100%">
+
+<tr><td>
+
+		<label for="name">Job title:</label><br />
+        <input type="text" id="name" name="job_title" maxlength="100" required />
+<td>
+        <label for="">Company:</label><br />
+        <input type="text" id="" name="company" required />
+
+<tr><td>
+        <label for="">Start Date</label><br />
+        <input type="date" id="start_year" name="start_date" required />
+<td>
+		<label for="">End Date</label><br />
+        <input type="date" id="" name="end_date"  />
+
+<tr><td>
+		<label for="">Experience </label><br />
+        <input type="text" id="" name="experience"  required />
+
+        <td align="right">
+<br>
+		<button type="submit">Submit</button>
+</table>
+    </form>
+
+	</table>
+
+
+
+{% endblock %}

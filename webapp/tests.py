@@ -1,3 +1,9 @@
-from django.test import TestCase
+pip uninstall python-docx
+pip install python-docx
+pip install spacy
 
-# Create your tests here.
+python -m spacy download en_core_web_sm
+
+
+
+
