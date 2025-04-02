@@ -1,13 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'user_base.html' %}
 
 
 {% block content %}
-
-{% if messages %}
-            {% for message in messages %}
-                <p style="color: red;">{{ message }}</p>
-            {% endfor %}
-        {% endif %}
+{{msg}}
 <style>
     
         form {
@@ -43,30 +38,23 @@
 </head>
 <body>
 
-<table width="100%"><tr><td valign="top">
-    <h2>User Signup</h2><br>
-    <form method="POST" action="/register/">
+<table width="70%"><tr><td valign="top">
+    <h2>Edit Skill Data</h2><br>
+    <form method="POST" action="/editeducation/">
         {% csrf_token %}
 <table width="100%">
 
 <tr><td>
 
-		<label for="name">Name:</label><br />
-        <input type="text" id="name" name="name" maxlength="100" required />
-<td>
-        <label for="email">Email:</label><br />
-        <input type="email" id="email" name="email" required />
-
+		<label for="name">ID:</label><br />
+        <input type="text" id="id" value="{{data.id}}" name="id" readonly required />
 <tr><td>
-        <label for="phone">Phone:</label><br />
-        <input type="text" id="phone" name="phone" maxlength="15" />
-<td>
-		<label for="email">Password:</label><br />
-        <input type="password" id="password" name="password" required />
-
-<tr>        <td>
+        <label for="">Skill:</label><br />
+        <input type="text" id="" name="skill" value="{{data.skills}}"  required />
+<tr>
+        <td align="right">
 <br>
-		<button type="submit">Submit</button>
+		<button type="submit">Edit</button>
 </table>
     </form>
 

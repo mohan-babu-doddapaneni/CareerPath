@@ -44,6 +44,21 @@ figure, header, nav, section, article, aside, footer, figcaption {
   outline: 0;
 }
 
+.card {
+    transition: 0.3s;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    color: #333;
+}
+
+
 .clearfix:after {
   content: ".";
   display: block;
@@ -214,6 +229,17 @@ input[type="text"] {
     font-size: 16px; /* Font size */
     transition: border-color 0.3s; /* Smooth transition */
 }
+textarea {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside the textarea */
+    border: 2px solid #ccc; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: border-color 0.3s; /* Smooth transition */
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 100px; /* Set a minimum height */
+}
+
 input[type="password"] {
     width: 100%; /* Full width */
     padding: 10px; /* Padding inside the input */

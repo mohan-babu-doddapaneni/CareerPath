@@ -1,0 +1,53 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+
+		{% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+
+<body>
+    <h2>Get data from Resume</h2>
+	Feel Free to Update
+	<hr>
+	<br>
+		<form method="POST" action="/update_resume_data/">
+        {% csrf_token %}
+        
+<center>
+        <table id="tab" width="60%">
+		<tr><td>
+		<label><b><h4>Skills</h4></label>
+		<tr><td>
+
+
+		<textarea name="skills" required>{{ skills_txt }}</textarea><br>
+		<tr><td>
+		<label><b><h4>Experience</label>
+
+	    <input type="text" name="exp" value="{{ exp }}" required>
+		
+		<tr><td>
+		<label><b><h4>Education:</label>
+
+
+		{% for record in education %}				<tr><td>
+	        <input type="hidden" name="record_id" value="{{ record.id }}">
+		    <textarea name="content" required>{{ record.degree }}</textarea><br>
+	    {% empty %}
+		        <p>No records </p>
+		{% endfor %}
+
+		<tr><td><br>
+        <button class="form-control"   type="submit">Finish</button>
+		</table>
+	</form>
+<br>
+
+
+
+{% endblock %}
