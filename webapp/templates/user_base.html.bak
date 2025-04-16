@@ -129,8 +129,9 @@ textarea {
 
 						  <li><a href="/userhome">Home</a></li>
 						  <li><a href="/profile">Profile</a></li>
-						  <li><a href="/analyseskillset">Analyse Skillset</a></li>
+						  <li><a href="/analyseskillset">Analyse Skill Set</a></li>
 						 <li><a href="/upload_resume">Upload Resume</a></li>
+                         <li><a href="/jprediction">Job Prediction</a></li>
                           <li><a href="/userlogout">Logout</a></li>
                           
 						  

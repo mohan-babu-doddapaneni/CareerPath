@@ -1,0 +1,45 @@
+
+
+{% extends 'a_base.html' %}
+
+{% load static %}
+
+
+
+{% block content %}
+
+<h3>
+	
+{{msg}}
+	
+	<h3>
+	View Performance Results<br><br>
+</h2>
+</h3>
+<center>
+				<table id="tab" width="100%">
+<tr>
+	<th width="10%">Sno<th><center>Algorithm<th><center>Accuracy<th><center>Precision<th><center>Recall<th><center>F1-score
+
+
+				{% for d in data %}
+<tr><td>{{forloop.counter}}<td><center>{{d.alg_name}}<td><center>{{d.sc1}}
+
+<td><center>{{d.sc2}}
+<td><center>{{d.sc3}}
+<td><center>{{d.sc4}}
+</tr>
+				{% endfor %}
+</table>
+
+<center><br><br>
+<table id="tab" width="70%"><tr><td>
+          <br><img border src="{% static 'assets/images/accuracy.png' %}" width="600" />
+<tr>	<td>
+	   <br><img src="{% static 'assets/images/precision.png' %}"  width="600"/>
+<tr><td>
+	      <br><img src="{% static 'assets/images/recall.png' %}"  width="600"/>
+<tr><td>
+		     <br><img src="{% static 'assets/images/f1.png' %}"  width="600"/>
+</table>	
+{% endblock %}

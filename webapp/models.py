@@ -49,3 +49,23 @@ class SkillsDataset(models.Model):
     AdvancedConcepts = models.CharField(max_length=255 )
     Certifications = models.CharField(max_length=255 )
 
+class performance(models.Model):
+    alg_name = models.CharField(max_length=100)
+    sc1 = models.FloatField()
+    sc2 = models.FloatField()
+    sc3 = models.FloatField()
+    sc4 = models.FloatField()
+
+
+
+class dataset(models.Model):
+    job_id = models.CharField(max_length=20, unique=True)
+    skills = models.TextField()
+    years_of_experience = models.PositiveIntegerField()
+    predicted_job_title = models.CharField(max_length=100)
+    company_name = models.CharField(max_length=100)
+    company_location = models.CharField(max_length=100)
+    industry = models.CharField(max_length=100)
+    salary_usd = models.PositiveIntegerField()
+    education_level = models.CharField(max_length=100)
+
