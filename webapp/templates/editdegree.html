@@ -44,12 +44,12 @@
         {% csrf_token %}
 <table width="100%">
 
-<tr><td>
+<!-- <tr><td> -->
 
-		<label for="name">ID:</label><br />
-        <input type="text" id="id" name="id" value="{{data.id}}" readonly required />
+		<!-- <label for="name">ID:</label><br /> -->
+        <input type="hidden" id="id" name="id" value="{{data.id}}" readonly required />
 <tr><td>
-        <label for="">Skills:</label><br />
+        <label for="">Skill:</label><br />
         <input type="text" id="" name="degree" required value="{{data.degree}}" />
 <tr>
         <td align="right">

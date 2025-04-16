@@ -24,11 +24,13 @@ def extract_skills(text):
     found_skills = [skill for skill in skills_list if skill.lower() in text.lower()]
     return found_skills
 
+
 def extract_education(text):
-    education_keywords = ["Bachelor", "Master", "PhD", "BSc", "MSc", "BE", "ME", "B.Tech", "M.Tech"]
-    lines = text.split("\n")
-    education = [line for line in lines if any(keyword in line for keyword in education_keywords)]
-    return education
+    education_keywords = ["Bachelor", "Masters", "PhD", "BSc", "MSc", "B.Tech", "M.Tech"]
+    found_education = [keyword for keyword in education_keywords if keyword.lower() in text.lower()]
+    return found_education
+
+
 
 def parse_resume(docx_path):
     text = extract_text_from_docx(docx_path)

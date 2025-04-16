@@ -44,18 +44,25 @@ urlpatterns = [
     path('deleteskill/', deleteskill, name="deleteskill"),
     
     
+    
+    
     path('analyseskillset/', analyseskillset, name="analyseskillset"),
     path('analyse_skillset/', analyse_skillset, name='analyse_skillset'),
     path('prediction_job/', prediction_job, name='prediction_job'),
     path('analyse_skillset2/', analyse_skillset2, name='analyse_skillset2'),
-    
-    
-    
-    
-
-    
 
 
+    path('classification/', classification, name="classification"),
+    path('rftrain/', rftrain, name="rftrain"),
+    path('nntrain/', nntrain, name="nntrain"),
+    path('nbtrain/', nbtrain, name="nbtrain"),
+    path('svmtrain/', svmtrain, name="svmtrain"),
+    path('viewresults/', viewresults, name="viewresults"),
+    
+    path('upload/', upload, name="upload"),
+    path('prediction/', prediction, name="jobprediction"),
+
+  
 
 ]
 

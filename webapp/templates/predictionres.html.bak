@@ -1,0 +1,65 @@
+
+
+{% extends 'user_base.html' %}
+{% load static %}
+
+{% block content %} 
+<center>
+<h2>Prediction Results
+<hr>
+</h2>
+
+
+
+
+
+
+
+<table id="tab" width="100%">
+				<tr><th>#<th>Job ID<th>Skills Required<th>Experience<th>Job Title<th>Company Name<th>Location<th>Salary<th>Education Required
+
+        {% for d1 in data %}
+        
+					<tr><td>{{ forloop.counter }}<td><h5 class="card-title fw-bold">{{ d1.job_id }}</h5>
+					<td>{{d1.skills}}
+					<td>{{d1.years_of_experience}}
+										<td>{{d1.predicted_job_title}}
+															<td>{{d1.company_name}}
+																				<td>{{d1.company_location}}
+																			<td>{{d1.salary_usd}}
+																																						<td>{{d1.education_level}}
+					
+        {% endfor %}
+    
+
+<tr><td colspan=8>
+<h2><br>Relevant results<br>
+    {% if relevant %}
+
+        {% for d1 in relevant %}
+        
+					<tr><td>{{ forloop.counter }}<td><h5 class="card-title fw-bold">{{ d1.job_id }}</h5>
+					<td>{{d1.skills}}
+					<td>{{d1.years_of_experience}}
+										<td>{{d1.predicted_job_title}}
+															<td>{{d1.company_name}}
+																				<td>{{d1.company_location}}
+																			<td>{{d1.salary_usd}}
+																																						<td>{{d1.education_level}}
+					
+        {% endfor %}
+
+
+	{% else %}
+    
+	
+	{% endif %}
+
+    </table>
+
+
+
+
+
+
+{% endblock %}
