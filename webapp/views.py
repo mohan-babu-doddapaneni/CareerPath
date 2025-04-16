@@ -7,6 +7,12 @@ from . models import *
 import csv
 from .GetHash import get_hash
 
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
+#from sklearn.linear_model import  LogisticRegression
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import LinearSVC
+
 
 def home(request):
     
@@ -52,10 +58,15 @@ def login_user(request):
 
 
 
-
-
+# def dashboard(request):
+#     return render(request, "user_home.html")
 def dashboard(request):
-    return render(request, "user_home.html")
+    if "email" in request.session:
+        email = request.session["email"]
+        user = Users.objects.filter(username=email).first()
+        return render(request, "user_home.html", {'user': user})
+    else:
+        return redirect('userlogoutdef')
 
 
 
@@ -150,7 +161,8 @@ def viewworkexperience(request):
     if "email" in request.session:
         email=request.session["email"]
         d=WorkExperience.objects.filter(username__exact=email)
-        return render(request, 'profile.html',{'experiences': d, 'st2':True})
+        d2=Resume_experience.objects.filter(username=email)
+        return render(request, 'profile.html',{'experiences': d,'data': d2[0], 'st2':True})
 
     else:
         return redirect('userlogoutdef')
@@ -236,7 +248,7 @@ def upload_resume(request):
         
         form = ResumeUploadForm()
 
-    resumes = Resumes.objects.all()
+    resumes = Resumes.objects.filter(username=request.session["email"])
     return render(request, "upload_resume.html", {"form": form, "resumes": resumes})
 
 def deleteresume(request):
@@ -471,8 +483,13 @@ def analyse_skillset(request):
             user_skills.append(r2)
     
     print(req_skills, user_skills)
+
+    unique_skills = list(set(req_skills) - set(user_skills))
+
     list1 = [word.lower() for word in req_skills]
     list2 = [word.lower() for word in user_skills]
+
+
 
     matches = sum(1 for word in list1 if word in list2)
     percentage = (matches / len(list1)) * 100 if list1 else 0
@@ -482,7 +499,7 @@ def analyse_skillset(request):
     d2=SkillsDataset.objects.filter(Role=career)
     
 
-    return render(request, 'analyseskill.html',{'green_status': percentage,'red_status': red_status, 'data': d,'stz':True, 'req_skills':", ".join(req_skills), 'user_skills':", ".join(user_skills), 'tot_data':d2} )
+    return render(request, 'analyseskill.html',{'green_status': percentage,'red_status': red_status, 'data': d,'stz':True, 'req_skills':", ".join(req_skills), 'user_skills':", ".join(user_skills),'unique_skills':", ".join(unique_skills), 'tot_data':d2} )
 
 
 
@@ -502,7 +519,6 @@ def prediction_job(request):
     
     scores = defaultdict(float)
     
-    
     dataset=SkillsDataset.objects.all()
     for d1 in dataset:
         req_skills=[]
@@ -520,8 +536,7 @@ def prediction_job(request):
     
     best_id = max(scores, key=scores.get)
     scores=dict(scores)
-    scores = dict(sorted(scores.items(), key=lambda item: item[1], reverse=True)) #mohanchanges
-
+    scores = dict(sorted(scores.items(), key=lambda item: item[1], reverse=True))
 
     
 
@@ -547,6 +562,9 @@ def analyse_skillset2(request):
             user_skills.append(r2)
     
     print(req_skills, user_skills)
+    unique_skills = list(set(req_skills) - set(user_skills))
+
+
     list1 = [word.lower() for word in req_skills]
     list2 = [word.lower() for word in user_skills]
 
@@ -558,18 +576,216 @@ def analyse_skillset2(request):
     d2=SkillsDataset.objects.filter(Role=career)
     
 
-    return render(request, 'analyseskill2.html',{'green_status': percentage,'red_status': red_status, 'data': d,'stz':True, 'req_skills':", ".join(req_skills), 'user_skills':", ".join(user_skills), 'tot_data':d2} )
+    return render(request, 'analyseskill2.html',{'green_status': percentage,'red_status': red_status, 'data': d,'stz':True, 'req_skills':", ".join(req_skills), 'user_skills':", ".join(user_skills), 'tot_data':d2, 'unique_skills':", ".join(unique_skills)} )
 
+
+
+def classification(request):
+    return render(request, 'classification.html')
+
+def nbtrain(request):
+    alg = BernoulliNB()
+
+    from .Classification import Classification
+    model = Classification(alg)
+    
+    
+    sc=model.train()
+    
+    d = performance.objects.filter(alg_name='Naive Bayes')
+    d.delete()
+
+    
+    d = performance(alg_name='Naive Bayes', sc1=sc[0], sc2=sc[1], sc3=sc[2], sc4=sc[3])
+    d.save()
+    
+    return render(request, 'classification.html', {'msg': "Naive Bayes Classification completed"})
+
+
+def rftrain(request):
+    alg = RandomForestClassifier()
+
+    
+    d = performance.objects.filter(alg_name='Random Forest')
+    d.delete()
+    
+    
+    from .Classification import Classification
+    model = Classification(alg)
+    
+    sc=model.train()
+    
+    d = performance(alg_name='Random Forest', sc1=sc[0], sc2=sc[1], sc3=sc[2], sc4=sc[3])
+    d.save()
+    
+    
+    return render(request, 'classification.html', {'msg': "Random Forest Classification completed"})
+    
+
+def svmtrain(request):
+    alg = LinearSVC()
+
+
+    d = performance.objects.filter(alg_name='SVM')
+    d.delete()
+    
+    
+    from .Classification import Classification
+
+    model = Classification(alg)
+    
+    sc=model.train()
+    d = performance(alg_name='SVM', sc1=sc[0], sc2=sc[1], sc3=sc[2], sc4=sc[3])
+    d.save()
+    
+    return render(request, 'classification.html', {'msg': "SVM Classification completed"})
+
+
+def nntrain(request):
+    alg = MLPClassifier()
+
+
+    d = performance.objects.filter(alg_name='Neural Networks')
+    d.delete()
+    
+    from .Classification import Classification
+
+    model = Classification(alg)
+    sc=model.train()
+    
+    d = performance(alg_name='Neural Networks', sc1=sc[0], sc2=sc[1], sc3=sc[2], sc4=sc[3])
+    d.save()
+    
+    return render(request, 'classification.html', {'msg': "Neural Networks Classification completed"})
+    
+    
+    
+    
+    
+
+def viewresults(request):
+    from .Graphs import viewg
+    
+    d = performance.objects.all()
+    val = dict({})
+    for d1 in d:
+        val[d1.alg_name] = d1.sc1
+        
+    try:viewg(val, 'accuracy.png', 'Accuracy')
+    except:pass
+    
+    val = dict({})
+    for d1 in d:
+        val[d1.alg_name] = d1.sc2
+    try:viewg(val, 'precision.png', 'Precision')
+    except:pass
+    
+    val = dict({})
+    for d1 in d:
+        val[d1.alg_name] = d1.sc3
+    try:viewg(val, 'recall.png', 'Recall')
+    except:pass
+
+    val = dict({})
+    for d1 in d:
+        val[d1.alg_name] = d1.sc4
+    try:viewg(val, 'f1.png', 'F1 Score')
+    except:pass
+
+    return render(request, 'viewacc.html', {'data': d})
 
 
 
     
+
+import csv
+def upload(request):
+    if  request.method=='POST':
+
+        file_path=request.POST['file']
+        
+        with open(file_path, encoding="utf-8-sig") as csvfile:
+            reader = csv.DictReader(csvfile)
+        
+        
+            for row in reader:
+                dataset.objects.update_or_create(
+                    job_id=row["Job_ID"],
+                    defaults={
+                        "skills": row["Skills"],
+                        "years_of_experience": int(row["Years_of_Experience"]),
+                        "predicted_job_title": row["Predicted_Job_Title"],
+                        "company_name": row["Company_Name"],
+                        "company_location": row["Company_Location"],
+                        "industry": row["Industry"],
+                        "salary_usd": int(row["Salary (USD)"]),
+                        "education_level": row["Education_Level"],
+                    }
+                )
+
+
+        return render(request, 'dataset.html', {'msg': "Dataset Uploaded Successfully"})
+    
+    else:
+        d=dataset.objects.filter()
+        return render(request, 'dataset.html', {'data':d})    
     
 
 
 
-
-
-
-
     
+
+
+def prediction(request):
+    if  request.method=='POST':
+
+        exp=request.POST['exp']
+        edu=request.POST['edu']
+        skills=request.POST['skills']
+        from .Classification import Classification
+        try:
+            model = Classification(RandomForestClassifier())
+            model.train()
+            predicted_job_id = model.predict(skills, exp, edu)
+            print(predicted_job_id)
+
+            data=dataset.objects.filter(job_id=predicted_job_id)
+
+            relevant=dataset.objects.filter(predicted_job_title=data[0].predicted_job_title)[:9]
+        except Exception as E:
+            print(E)
+            return render(request, 'user_home.html', {'message': 'Details Mis Matched'})
+
+
+        return render(request, 'predictionres.html', {'data': data, 'relevant':relevant})
+    
+    else:
+        email=request.session['email']
+        education=''; skills='';experience=''
+        
+        d=Resume_education.objects.filter(username=email)
+        temp=[]
+        for d1 in d:
+            w=d1.degree.replace('.', '')
+            temp.append(w)
+        education=', '.join(temp)
+
+        try:
+            d=Resume_skills.objects.filter(username=email)[0]
+            skills=d.skills
+        except:pass
+
+        try:
+            d=Resume_experience.objects.filter(username=email)[0]
+            text=d.experience
+            for char in text:
+                if char.isdigit():
+                    experience += char
+        except:pass
+
+
+
+        
+        return render(request, 'prediction.html', {'skills':skills, "education":education, "experience":experience})    
+    
+
