@@ -1,0 +1,81 @@
+{% extends 'user_base.html' %}
+
+
+{% block content %}
+{{msg}}
+<style>
+    
+        form {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 12px #aaa;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<table width="100%"><tr><td valign="top">
+    <h2>Edit Experience Data</h2><br>
+    <form method="POST" action="/editexp/">
+        {% csrf_token %}
+<table width="100%">
+
+<!-- <tr><td>
+
+		<label for="name">ID:</label><br /> -->
+        <input type="hidden" id="id" name="id" value="{{data.id}}" readonly required />
+<tr><td>
+        <label for="">Job title:</label><br />
+        <input type="text" id="" name="job_title" required value="{{data.job_title}}" />
+<tr><td>
+        <label for="">Company:</label><br />
+        <input type="text" id="" name="company" required value="{{data.company}}" />
+<tr><td>
+        <label for="">Start date:  </label><br />
+		{{data.start_date}}
+        <input type="date" id="start_year" name="start_date" required  value="{{ data.start_date | date:'yyyy-MM-dd' }}"/>
+<tr><td>
+        <label for="">End date:  </label><br />
+				{{data.end_date}}
+
+        <input type="date" id="end_year" name="end_date" required  value="{{ data.end_year | date:'yyyy-MM-dd' }}"/>
+
+<tr><td>
+        <label for="">Experience</label><br />
+        <input type="text" id="exp" name="exp" required value="{{data.experience}}" />
+<tr>
+        <td align="right">
+<br>
+		<button type="submit">Edit</button>
+</table>
+    </form>
+
+	</table>
+
+
+
+{% endblock %}

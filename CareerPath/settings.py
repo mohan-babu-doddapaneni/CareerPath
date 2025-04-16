@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v276gihrr(!yu#zaz#2he4lx^vn3rk*^jygu#0j5z0*az3-91&'
+SECRET_KEY = '_)pgt5*rv@$4-5&tmn6^g6+wp^js^q@%)mnp*bn#s^v6r0g(c7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*','']
 
 
 # Application definition
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'CareerPath.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'careerpath',
+        'NAME': 'CareerPath',
         'USER': 'root',
         'PASSWORD': '1172',
         'HOST': '127.0.0.1',
@@ -124,3 +124,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
