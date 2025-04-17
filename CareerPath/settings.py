@@ -25,7 +25,7 @@ SECRET_KEY = '_)pgt5*rv@$4-5&tmn6^g6+wp^js^q@%)mnp*bn#s^v6r0g(c7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*','']
+ALLOWED_HOSTS = ['*','.vercel.app']
 
 
 # Application definition
@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'CareerPath.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'CareerPath',
-        'USER': 'root',
+        'USER': 'postgres',
         'PASSWORD': '1172',
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
 
