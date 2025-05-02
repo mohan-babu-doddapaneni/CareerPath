@@ -12,6 +12,8 @@ from sklearn.ensemble import RandomForestClassifier
 #from sklearn.linear_model import  LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.svm import LinearSVC
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def home(request):
@@ -742,27 +744,42 @@ def upload(request):
 
 
 def prediction(request):
-    if  request.method=='POST':
+    if request.method == 'POST':
+        exp = request.POST['exp']
+        edu = request.POST['edu']
+        skills = request.POST['skills']
 
-        exp=request.POST['exp']
-        edu=request.POST['edu']
-        skills=request.POST['skills']
-        from .Classification import Classification
         try:
-            model = Classification(RandomForestClassifier())
-            model.train()
-            predicted_job_id = model.predict(skills, exp, edu)
-            print(predicted_job_id)
+            user_profile = f"{skills} {edu} {exp}"
 
-            data=dataset.objects.filter(job_id=predicted_job_id)
+            # Fetch all job entries from the database
+            jobs = list(dataset.objects.all())
 
-            relevant=dataset.objects.filter(predicted_job_title=data[0].predicted_job_title)[:9]
-        except Exception as E:
-            print(E)
-            return render(request, 'user_home.html', {'message': 'Details Mis Matched'})
+            # Create job documents (text blobs)
+            job_documents = [f"{job.skills} {job.education_level} {job.years_of_experience}" for job in jobs]
 
+            # Add user profile at the start
+            documents = [user_profile] + job_documents
 
-        return render(request, 'predictionres.html', {'data': data, 'relevant':relevant})
+            # TF-IDF Vectorization
+            vectorizer = TfidfVectorizer()
+            vectors = vectorizer.fit_transform(documents)
+
+            # Compute cosine similarity between user and all jobs
+            cosine_scores = cosine_similarity(vectors[0:1], vectors[1:]).flatten()
+
+            # Top 9 most relevant jobs
+            top_indices = cosine_scores.argsort()[-9:][::-1]
+            relevant_jobs = [jobs[i] for i in top_indices]
+
+            # Show top 1 as the predicted job + relevant suggestions
+            predicted_job = relevant_jobs[0]
+
+        except Exception as e:
+            print("Prediction error:", e)
+            return render(request, 'user_home.html', {'message': 'Something went wrong. Try again.'})
+
+        return render(request, 'predictionres.html', {'data': [predicted_job], 'relevant': relevant_jobs})
     
     else:
         email=request.session['email']
