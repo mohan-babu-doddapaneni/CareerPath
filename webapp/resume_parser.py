@@ -26,7 +26,7 @@ def extract_skills(text):
 
 
 def extract_education(text):
-    education_keywords = ["Bachelor", "Master","Masters", "PhD", "BSc", "MSc", "B.Tech", "M.Tech"]
+    education_keywords = ["Bachelor", "Master", "Masters", "PhD", "BSc", "MSc", "B.Tech", "M.Tech"]
     found_education = [keyword for keyword in education_keywords if keyword.lower() in text.lower()]
     return found_education
 
