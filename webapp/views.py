@@ -162,8 +162,13 @@ def viewworkexperience(request):
         email=request.session["email"]
         d=WorkExperience.objects.filter(username__exact=email)
         d2=Resume_experience.objects.filter(username=email)
-        return render(request, 'profile.html',{'experiences': d,'data': d2[0], 'st2':True})
+        data = d2[0] if d2 else None
 
+        return render(request, 'profile.html', {
+            'experiences': d,
+            'data': data,
+            'st2': True
+        })
     else:
         return redirect('userlogoutdef')
 
