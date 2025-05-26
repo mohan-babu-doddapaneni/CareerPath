@@ -138,3 +138,8 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Dataset file names (to be located in BASE_DIR)
+# These are the names of the CSV files expected to be at the root of the project.
+SKILLS_DATASET_FILENAME = 'SkillsDataset.csv'
+JOB_DATASET_FILENAME = 'career_path_dataset.csv' # Assuming this is the intended name for the job dataset
