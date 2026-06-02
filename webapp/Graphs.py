@@ -1,6 +1,12 @@
+import os
+import matplotlib
+matplotlib.use("Agg")  # headless backend; safe on servers without a display
 import numpy as np
 import matplotlib.pyplot as plt
-import os
+
+# Directory where generated chart images are written, resolved relative to this
+# file so it works on any OS / host (was previously a hard-coded Windows path).
+IMAGES_DIR = os.path.join(os.path.dirname(__file__), 'static', 'assets', 'images')
 
 
 def viewg(g1, picname="default.png", name="Data"):
@@ -24,10 +30,11 @@ def viewg(g1, picname="default.png", name="Data"):
     plt.grid(axis='y', linestyle='--', alpha=0.7)
 
     # Save the figure
-    output_path = os.path.join('D:\\Django\\CareerPath\\webapp\\static\\assets\\images', picname)
+    os.makedirs(IMAGES_DIR, exist_ok=True)
+    output_path = os.path.join(IMAGES_DIR, picname)
     plt.tight_layout()
-    plt.savefig(output_path, )
-    plt.clf()
+    plt.savefig(output_path)
+    plt.close()
 
 
 # Example usage

@@ -19,9 +19,16 @@ def extract_phone_number(text):
 
 
 def extract_skills(text):
-    print(text)
     skills_list = ['Trello', 'PostgreSQL', 'Git', 'TypeScript', 'Asana', 'PyTorch', 'Blender', 'Pandas', 'C#', 'Flutter', 'Python', 'Jupyter', 'Unity', 'TailwindCSS', 'Truffle', 'Tableau', 'R', 'JavaScript', 'Android Studio', 'Prometheus', 'Jenkins', 'HTML', 'MERN/MEAN Stack', 'Scikit-Learn', 'GitHub', 'Nagios', 'Power BI', 'Azure DevOps', 'SASS', 'Agile', 'Software Development', 'AWS Sagemaker', 'AWS Redshift', 'JUnit', 'Jira', 'Nginx', 'Bash', 'Hyperledger', 'TestNG', 'SQL', 'Selenium', 'React Native', 'GitLab CI/CD', 'Ruby on Rails', 'Unreal Engine', 'TensorFlow', 'Matplotlib', 'Firebase', 'Autodesk Maya', 'Node.js', 'Wireshark', 'Kubernetes', 'Docker', 'Scrum', 'Kali Linux', 'Figma', 'MongoDB', 'GitHub Actions', 'Keras', 'Django + React', 'Cypress', 'LAMP Stack', 'Redis', 'OpenCV', 'Swift', 'ASP.NET', 'Project Management', 'Assembly', 'Terraform', 'Ansible', 'Spring Boot', 'Kotlin', 'CI/CD Tools', 'Plastic SCM', 'Express.js', 'Adobe XD', 'C', 'CSS', 'Angular', 'Appium', 'Ethereum', 'MetaMask', 'Azure', 'AWS', 'Smart Contracts', 'Ganache', 'MVC', 'Solidity', 'Google Colab', 'Spring Boot + Angular', 'Vue', 'React', 'Java', 'Google Cloud', 'Xcode', 'Metasploit', 'MySQL', 'MS Project', 'Flask', 'Webpack', 'Machine Learning', 'Burp Suite', 'Nessus', 'Lua', 'Postman', 'Remix IDE', 'Vite', 'Django', 'C++']
-    found_skills = [skill for skill in skills_list if skill.lower() in text.lower()]
+    # Match whole tokens only so single-letter skills like "R"/"C" don't match
+    # every word, and "Java" doesn't match inside "JavaScript". The boundaries
+    # treat +, # and . as part of a skill token (e.g. C++, C#, Node.js).
+    lowered = text.lower()
+    found_skills = []
+    for skill in skills_list:
+        pattern = r'(?<![\w+#.])' + re.escape(skill.lower()) + r'(?![\w+#])'
+        if re.search(pattern, lowered):
+            found_skills.append(skill)
     return found_skills
 
 

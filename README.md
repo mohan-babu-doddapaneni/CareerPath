@@ -1,33 +1,70 @@
 # Career Path Recommendation System
 
 ## Introduction
-The **Career Path Recommendation System** is an AI-driven web application designed to assist users in evaluating their career suitability, identifying skill gaps, and recommending relevant online courses and certifications.
+The **Career Path Recommendation System** is an AI-driven web application that helps
+users evaluate their career suitability, identify skill gaps against target roles, and
+get a recommended job title based on their resume and skills.
 
 ## Features
-- **User Authentication** (Email/Password)
-- **Resume Analysis** (Extract skills, match career paths)
-- **AI-Powered Recommendations** (Skill gaps, improvement suggestions)
-- **Job Portal Integration** (Real-time job updates)
-- **Interactive Dashboards** (Career insights, progress tracking)
-- **Secure Data Handling** (Privacy compliance)
+- **User Authentication** (email/password, passwords stored as salted PBKDF2 hashes)
+- **Resume Analysis** (uploads a `.docx`, extracts skills, education and experience)
+- **Skill-Gap Analysis** (compares your skills against a target role's required skills)
+- **AI Role Prediction** (Random Forest model predicts a suitable job title)
+- **Model Comparison Dashboard** (Random Forest, Naive Bayes, SVM, Neural Network metrics)
+- **Admin Dashboard** (manage the skills and career datasets)
 
 ## Tech Stack
-| Category      | Technology |
-|--------------|------------|
-| **Frontend** | HTML, Bootstrap, CSS |
-| **Backend**  | Django, Flask |
-| **ML/NLP**   | Scikit-learn, NLTK, Pandas |
-| **Database** | MySQL |
-| **Hosting**  | AWS |
-| **Version Control** | GitHub |
-| **Project Management** | Jira |
+| Category   | Technology |
+|------------|------------|
+| **Frontend** | HTML, Bootstrap, jQuery |
+| **Backend**  | Django 5.2 |
+| **ML / NLP** | scikit-learn, spaCy, pandas, matplotlib |
+| **Static**   | WhiteNoise |
+| **Database** | PostgreSQL in production (via `DATABASE_URL`); SQLite locally |
+| **Server**   | gunicorn |
+| **Hosting**  | Render (see below) |
 
-## Installation
+## Running Locally
 
-### Prerequisites
-- Python 3
-- Django
-- MySQL Database
-- Git
+```bash
+# 1. Create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
-## Team
+# 2. Install dependencies
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+
+# 3. Apply migrations (uses a local SQLite DB by default — no setup needed)
+python manage.py migrate
+
+# 4. Run the development server
+python manage.py runserver
+```
+
+Then open http://127.0.0.1:8000/. The admin section is at `/adminlogin/`
+(default credentials: `admin` / `admin`).
+
+### Configuration (environment variables)
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `DJANGO_SECRET_KEY` | Django secret key | insecure dev key |
+| `DJANGO_DEBUG` | Debug mode | `True` |
+| `DJANGO_ALLOWED_HOSTS` | Comma-separated allowed hosts | `*,.vercel.app,.onrender.com` |
+| `DATABASE_URL` | Database connection string | local SQLite file |
+
+## Deploying a Live Site (Render)
+
+This project ships with a `render.yaml` blueprint and a `build.sh` script.
+
+1. Push this repository to GitHub.
+2. Go to https://dashboard.render.com → **New + → Blueprint** and select this repo.
+3. Render reads `render.yaml`, provisions a free PostgreSQL database, sets
+   `DATABASE_URL`/`DJANGO_SECRET_KEY` automatically, runs `build.sh`
+   (install deps + spaCy model + `collectstatic` + `migrate`), and starts the
+   app with `gunicorn CareerPath.wsgi:application`.
+4. The live URL will be `https://<service-name>.onrender.com`.
+
+> **Note:** Vercel is **not** suitable for this app — scikit-learn + spaCy far
+> exceed its serverless function size limit. A container host such as Render,
+> Railway, or Fly.io is required.

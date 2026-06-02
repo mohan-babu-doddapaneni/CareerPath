@@ -1,0 +1,27 @@
+# Render Blueprint for the CareerPath project.
+# Deploy by connecting this repo at https://dashboard.render.com (New +
+# Blueprint), or push and let Render auto-detect this file.
+services:
+  - type: web
+    name: careerpath
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn CareerPath.wsgi:application"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: careerpath-db
+          property: connectionString
+
+databases:
+  - name: careerpath-db
+    plan: free

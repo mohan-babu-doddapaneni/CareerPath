@@ -1,10 +1,10 @@
+import os
+import csv
+from django.conf import settings
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 from . models import *
-import csv
 from .GetHash import get_hash
 
 from sklearn.neural_network import MLPClassifier
@@ -12,6 +12,21 @@ from sklearn.ensemble import RandomForestClassifier
 #from sklearn.linear_model import  LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.svm import LinearSVC
+
+
+# Cache a trained Random Forest model so the prediction endpoint does not
+# retrain from the CSV on every request.
+_PREDICTION_MODEL = None
+
+
+def get_prediction_model():
+    global _PREDICTION_MODEL
+    if _PREDICTION_MODEL is None:
+        from .Classification import Classification
+        model = Classification(RandomForestClassifier())
+        model.train()
+        _PREDICTION_MODEL = model
+    return _PREDICTION_MODEL
 
 
 def home(request):
@@ -24,12 +39,19 @@ def register(request):
         contact = request.POST["contact"]
         email = request.POST["email"]
         password = request.POST["password"]
-        hashed_password = get_hash(password)  # Hash the password
 
-        user = Users.objects.create(name=name, contact=contact, username=email, email=email, password=hashed_password)
-        
-        messages.error(request, "Account created successfully!")
-        
+        # Reject duplicate accounts instead of silently creating another one.
+        if Users.objects.filter(username=email).exists():
+            messages.error(request, "An account with this email already exists!")
+            return render(request, "register.html")
+
+        # Store a salted PBKDF2 hash (Django default), not raw MD5.
+        hashed_password = make_password(password)
+
+        Users.objects.create(name=name, contact=contact, username=email, email=email, password=hashed_password)
+
+        messages.success(request, "Account created successfully!")
+
         return redirect("login")
 
     return render(request, "register.html")
@@ -42,13 +64,21 @@ def login_user(request):
         email = request.POST["email"]
         password = request.POST["password"]
 
-        print(make_password(password))
+        user = Users.objects.filter(username=email).first()
 
-        user = Users.objects.filter(username=email).filter(password=get_hash(password)).first()  # Get user by email
-        if user:  # Check hashed password
+        # Verify against the modern hash; fall back to legacy MD5 for accounts
+        # created before the upgrade, transparently re-hashing them on success.
+        authenticated = False
+        if user:
+            if check_password(password, user.password):
+                authenticated = True
+            elif user.password == get_hash(password):
+                user.password = make_password(password)
+                user.save()
+                authenticated = True
 
-            request.session['email']=email
-            
+        if authenticated:
+            request.session['email'] = email
             messages.success(request, "Logged in successfully!")
             return redirect("dashboard")
         else:
@@ -103,13 +133,10 @@ def addeducation(request):
     if request.method=='POST':
         email=request.session["email"]
         degree=request.POST['degree']
-        institution=request.POST['institution']
-        start_year=request.POST['start_year']
-        end_year=request.POST['end_year']
-        score=request.POST['score']
-        d=Education(username=email, degree=degree, institution=institution, start_year=start_year, end_year=end_year, score=score)
+        # Persist to Resume_education (the model the profile pages display).
+        d=Resume_education(username=email, degree=degree)
         d.save()
-       
+
         return render(request, 'addeducation.html',{'msg': 'Education data added !!'})
 
     else:
@@ -138,10 +165,11 @@ def addskills(request):
     if request.method=='POST':
         email=request.session["email"]
         skills=request.POST['skills']
-        
-        d=Skills(username=email, skills=skills)
+
+        # Persist to Resume_skills (the model the profile/analysis pages use).
+        d=Resume_skills(username=email, skills=skills)
         d.save()
-       
+
         return render(request, 'addskills.html',{'msg': 'Skills data added !!'})
 
     else:
@@ -190,21 +218,16 @@ def upload_resume(request):
     if request.method == "POST":
         email=request.session["email"]
         messages.error(request, "")
-        print(request.method, '88888888888')
         form = ResumeUploadForm(request.POST, request.FILES)
         uploaded_file = request.FILES.get("file")
-
-        print(uploaded_file, '<<<<<<<<<<')
 
         if uploaded_file:
             if not uploaded_file.name.endswith(".docx"):
                 messages.error(request, "Only .docx files are allowed!")
-                return redirect("resume_upload")
-        print(form.is_valid(), 'Form is vlaid')
+                return redirect("upload_resume")
         if form.is_valid():
             username = form.cleaned_data["username"]
-            # Check if the username already exists\
-            print(Resumes.objects.filter(username=username).exists(), '<<<<<<<<<<<<<<<')
+            # Check if the username already exists
             if Resumes.objects.filter(username=username).exists():
                 messages.error(request, "Username already exists! Choose a different username.")
                 
@@ -213,7 +236,6 @@ def upload_resume(request):
 
             from . resume_parser import parse_resume
             basic_data=parse_resume(uploaded_file)
-            print(basic_data)
 
             skills=basic_data['Skills']
             skills_txt=", ".join(skills)
@@ -245,7 +267,6 @@ def upload_resume(request):
             return render(request, "upload_resume_edit.html", {"exp": exp, 'skills_txt':skills_txt, 'education':education})
             
         else:
-            print('$$$$$$$$$$$$$$$$$')
             if Resumes.objects.filter(username=request.session["email"]).exists():
                 messages.success(request, "Resume already uploaded !")
 
@@ -281,13 +302,10 @@ def update_resume_data(request):
         skills = request.POST.get('skills')
         exp = request.POST.get('exp')
 
-        ids = request.POST.getlist('record_id')  
+        ids = request.POST.getlist('record_id')
         contents = request.POST.getlist('content')
 
-        print(zip(ids, contents), '<<<<<<<<<<<<<<<<<<<')
-
         for record_id, content in zip(ids, contents):
-            print(record_id, content)
             record = Resume_education.objects.get(id=record_id)
             record.degree = content
             record.save()
@@ -318,7 +336,6 @@ def adminlogin(request):
 def adminloginaction(request):
     userid=request.POST['aid']
     pwd=request.POST['pwd']
-    print(userid, pwd,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
     if userid=='admin' and pwd=="admin":
         request.session['adminid']='admin'
         #messages.success(request, "Logged in successfully!")
@@ -337,16 +354,14 @@ def adminlogout(request):
 
 def skillsdataset(request):
     if request.method=='POST':
-        file_path='SkillsDataset.csv'
-        
+        file_path=os.path.join(settings.BASE_DIR, 'SkillsDataset.csv')
+
         SkillsDataset.objects.all().delete()
-        
+
         with open(file_path, encoding="utf-8-sig") as csvfile:
             reader = csv.DictReader(csvfile)
-            print(reader)
-            
+
             for row in reader:
-                print(row)
                 try:
                     SkillsDataset.objects.create(
                         #Role,Skills,Soft Skills,Advanced Concepts,Suggested Certifications & Courses
@@ -401,7 +416,6 @@ def deletedegree(request):
 
 def editexp(request):
     if request.method=='POST':
-        print(request.POST)
         id=request.POST['id']
         company=request.POST['company']
         job_title=request.POST['job_title']
@@ -437,7 +451,6 @@ def deleteexp(request):
 
 def editskill(request):
     if request.method=='POST':
-        print(request.POST)
         id=request.POST['id']
         skill=request.POST['skill']
         
@@ -477,7 +490,7 @@ def analyse_skillset(request):
     temp1=SkillsDataset.objects.filter(Role=career).first()
     req_skills=[]
     for r in temp1.Skills.split(','):
-        req_skills.append(r)
+        req_skills.append(r.strip())
     
     temp2=Resume_skills.objects.filter(username=email)
     user_skills=[]
@@ -485,9 +498,8 @@ def analyse_skillset(request):
     for r in temp2:
         row=r.skills
         for r2 in row.split(','):
-            user_skills.append(r2)
+            user_skills.append(r2.strip())
     
-    print(req_skills, user_skills)
 
     unique_skills = list(set(req_skills) - set(user_skills))
 
@@ -520,7 +532,7 @@ def prediction_job(request):
     for r in temp2:
         row=r.skills
         for r2 in row.split(','):
-            user_skills.append(r2)
+            user_skills.append(r2.strip())
     
     scores = defaultdict(float)
     
@@ -528,7 +540,7 @@ def prediction_job(request):
     for d1 in dataset:
         req_skills=[]
         for r in d1.Skills.split(','):
-            req_skills.append(r)
+            req_skills.append(r.strip())
         
     
     
@@ -556,7 +568,7 @@ def analyse_skillset2(request):
     temp1=SkillsDataset.objects.filter(Role=career).first()
     req_skills=[]
     for r in temp1.Skills.split(','):
-        req_skills.append(r)
+        req_skills.append(r.strip())
     
     temp2=Resume_skills.objects.filter(username=email)
     user_skills=[]
@@ -564,9 +576,8 @@ def analyse_skillset2(request):
     for r in temp2:
         row=r.skills
         for r2 in row.split(','):
-            user_skills.append(r2)
+            user_skills.append(r2.strip())
     
-    print(req_skills, user_skills)
     unique_skills = list(set(req_skills) - set(user_skills))
 
 
@@ -747,16 +758,15 @@ def prediction(request):
         exp=request.POST['exp']
         edu=request.POST['edu']
         skills=request.POST['skills']
-        from .Classification import Classification
         try:
-            model = Classification(RandomForestClassifier())
-            model.train()
-            predicted_job_id = model.predict(skills, exp, edu)
-            print(predicted_job_id)
+            model = get_prediction_model()
+            predicted_title = model.predict(skills, exp, edu)
 
-            data=dataset.objects.filter(job_id=predicted_job_id)
-
-            relevant=dataset.objects.filter(predicted_job_title=data[0].predicted_job_title)[:9]
+            # Jobs matching the predicted role: the first as the headline match,
+            # up to nine shown as similar opportunities.
+            matches = dataset.objects.filter(predicted_job_title=predicted_title)
+            data = matches[:1]
+            relevant = matches[:9]
         except Exception as E:
             print(E)
             return render(request, 'user_home.html', {'message': 'Details Mis Matched'})

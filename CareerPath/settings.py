@@ -22,12 +22,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_)pgt5*rv@$4-5&tmn6^g6+wp^js^q@%)mnp*bn#s^v6r0g(c7'
+# Read from the environment in production; fall back to a dev key locally.
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-_)pgt5*rv@$4-5&tmn6^g6+wp^js^q@%)mnp*bn#s^v6r0g(c7'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Defaults to True for local development; set DJANGO_DEBUG=False in production.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes', 'on')
 
-ALLOWED_HOSTS = ['*','.vercel.app','.onrender.com']
+# Comma-separated list of allowed hosts (env), defaulting to a permissive set
+# that also covers the common PaaS domains used to host this project.
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    '*,.vercel.app,.onrender.com'
+).split(',')
+
+# Required by Django's CSRF protection when the app is served over HTTPS.
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.vercel.app',
+]
 
 
 # Application definition
@@ -78,16 +94,13 @@ WSGI_APPLICATION = 'CareerPath.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
+# Uses DATABASE_URL when provided (e.g. Postgres in production); otherwise
+# falls back to a local SQLite file so the project runs out of the box.
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'CareerPath',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '1172',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': '5432',
-    # }
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=600,
+    )
 }
 
 
@@ -133,8 +146,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-import os
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
