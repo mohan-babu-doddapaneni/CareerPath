@@ -1,5 +1,6 @@
 import os
 import csv
+import logging
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
@@ -12,6 +13,8 @@ from sklearn.ensemble import RandomForestClassifier
 #from sklearn.linear_model import  LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.svm import LinearSVC
+
+logger = logging.getLogger(__name__)
 
 
 # Cache a trained Random Forest model so the prediction endpoint does not
@@ -109,10 +112,7 @@ def profile(request):
 
 
 def userlogoutdef(request):
-    try:
-        del request.session['email']
-    except:
-        pass
+    request.session.pop('email', None)
     return render(request, 'login.html')
 
 
@@ -222,47 +222,40 @@ def upload_resume(request):
         uploaded_file = request.FILES.get("file")
 
         if uploaded_file:
-            if not uploaded_file.name.endswith(".docx"):
-                messages.error(request, "Only .docx files are allowed!")
+            from . resume_parser import SUPPORTED_EXTENSIONS
+            if not uploaded_file.name.lower().endswith(SUPPORTED_EXTENSIONS):
+                messages.error(request, "Only .docx and .pdf files are allowed!")
                 return redirect("upload_resume")
         if form.is_valid():
             username = form.cleaned_data["username"]
             # Check if the username already exists
             if Resumes.objects.filter(username=username).exists():
                 messages.error(request, "Username already exists! Choose a different username.")
-                
+
                 return redirect("upload_resume")
 
-
+            # Parse the resume in a single pass (skills, education, experience).
             from . resume_parser import parse_resume
-            basic_data=parse_resume(uploaded_file)
-
-            skills=basic_data['Skills']
-            skills_txt=", ".join(skills)
-            d=Resume_skills(username=email, skills=skills_txt)
-            d.save()
-
-            education=basic_data['Education']
-
-            for s in education:
-                d=Resume_education(username=email, degree=s)
-                d.save()
-            
-            from . parse_exp import parse_resume
             resume_data=parse_resume(uploaded_file)
-            
+
+            # Clear any previous resume-derived data for this user so re-uploads
+            # don't accumulate duplicate rows.
+            Resume_skills.objects.filter(username=email).delete()
+            Resume_education.objects.filter(username=email).delete()
+            Resume_experience.objects.filter(username=email).delete()
+
+            skills=resume_data['Skills']
+            skills_txt=", ".join(skills)
+            Resume_skills(username=email, skills=skills_txt).save()
+
+            for s in resume_data['Education']:
+                Resume_education(username=email, degree=s).save()
+
             exp=resume_data['Total Experience']
-            d=Resume_experience(username=email, experience=exp)
-            d.save()
+            Resume_experience(username=email, experience=exp).save()
 
             education=Resume_education.objects.filter(username=email)
 
-            
-
-                   
-
-
-            
             form.save()
             return render(request, "upload_resume_edit.html", {"exp": exp, 'skills_txt':skills_txt, 'education':education})
             
@@ -378,7 +371,7 @@ def skillsdataset(request):
                     )
                     
                 except Exception as e:
-                    print(f"Error saving {row}: {e}")
+                    logger.warning("Error saving skills row %s: %s", row, e)
         d=SkillsDataset.objects.all()
         return render(request, 'skillsdataset.html', {'msg':'Skills dataset uploaded successfully !!', 'data':d})
     else:
@@ -685,32 +678,19 @@ def nntrain(request):
 
 def viewresults(request):
     from .Graphs import viewg
-    
-    d = performance.objects.all()
-    val = dict({})
-    for d1 in d:
-        val[d1.alg_name] = d1.sc1
-        
-    try:viewg(val, 'accuracy.png', 'Accuracy')
-    except:pass
-    
-    val = dict({})
-    for d1 in d:
-        val[d1.alg_name] = d1.sc2
-    try:viewg(val, 'precision.png', 'Precision')
-    except:pass
-    
-    val = dict({})
-    for d1 in d:
-        val[d1.alg_name] = d1.sc3
-    try:viewg(val, 'recall.png', 'Recall')
-    except:pass
 
-    val = dict({})
-    for d1 in d:
-        val[d1.alg_name] = d1.sc4
-    try:viewg(val, 'f1.png', 'F1 Score')
-    except:pass
+    d = performance.objects.all()
+    for attr, picname, title in (
+        ('sc1', 'accuracy.png', 'Accuracy'),
+        ('sc2', 'precision.png', 'Precision'),
+        ('sc3', 'recall.png', 'Recall'),
+        ('sc4', 'f1.png', 'F1 Score'),
+    ):
+        val = {row.alg_name: getattr(row, attr) for row in d}
+        try:
+            viewg(val, picname, title)
+        except Exception as exc:
+            logger.warning("Could not render %s graph: %s", title, exc)
 
     return render(request, 'viewacc.html', {'data': d})
 
@@ -772,7 +752,7 @@ def prediction(request):
             data = matches[:1]
             relevant = matches[:9]
         except Exception as E:
-            print(E)
+            logger.warning("Prediction failed: %s", E)
             return render(request, 'user_home.html', {'message': 'Details Mis Matched'})
 
 
@@ -789,18 +769,13 @@ def prediction(request):
             temp.append(w)
         education=', '.join(temp)
 
-        try:
-            d=Resume_skills.objects.filter(username=email)[0]
-            skills=d.skills
-        except:pass
+        skill_row=Resume_skills.objects.filter(username=email).first()
+        if skill_row:
+            skills=skill_row.skills
 
-        try:
-            d=Resume_experience.objects.filter(username=email)[0]
-            text=d.experience
-            for char in text:
-                if char.isdigit():
-                    experience += char
-        except:pass
+        exp_row=Resume_experience.objects.filter(username=email).first()
+        if exp_row and exp_row.experience:
+            experience="".join(ch for ch in exp_row.experience if ch.isdigit())
 
 
 
