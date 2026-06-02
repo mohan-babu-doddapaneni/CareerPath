@@ -14,3 +14,6 @@ python manage.py collectstatic --no-input
 
 # Apply database migrations.
 python manage.py migrate
+
+# Load the bundled CSV datasets so all features work on a fresh database.
+python manage.py seed_data
