@@ -34,10 +34,17 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes', '
 
 # Comma-separated list of allowed hosts (env), defaulting to a permissive set
 # that also covers the common PaaS domains used to host this project.
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS',
-    '*,.vercel.app,.onrender.com'
-).split(',')
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS', '*,.vercel.app,.onrender.com'
+    ).split(',') if h.strip()
+]
+
+# Always trust the hostname Render injects, plus the onrender.com domain, so a
+# mistyped DJANGO_ALLOWED_HOSTS can't cause a "Bad Request (400)" on deploy.
+for _host in ('.onrender.com', os.environ.get('RENDER_EXTERNAL_HOSTNAME')):
+    if _host and _host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_host)
 
 # Required by Django's CSRF protection when the app is served over HTTPS.
 CSRF_TRUSTED_ORIGINS = [
