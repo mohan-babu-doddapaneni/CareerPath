@@ -1,0 +1,58 @@
+{% extends 'user_base.html' %}
+
+{% block content %}
+
+<h5>Live Job Search</h5>
+<p>Search real job listings by role and (optionally) location.</p>
+
+<form method="GET" action="/jobsearch/">
+    <table id="tab" width="80%">
+        <tr>
+            <th>Role / keywords</th>
+            <td><input type="text" name="role" value="{{ role }}" placeholder="e.g. Full Stack Developer" required></td>
+        </tr>
+        <tr>
+            <th>Location (optional)</th>
+            <td><input type="text" name="location" value="{{ location }}" placeholder="e.g. London"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Search Jobs"></td>
+        </tr>
+    </table>
+</form>
+<br>
+
+{% if searched %}
+    <p><b>{{ jobs|length }}</b> result(s) for "<b>{{ role }}</b>"{% if location %} in <b>{{ location }}</b>{% endif %}
+       &nbsp;<small>(source: {{ source }})</small></p>
+
+    {% if jobs %}
+    <center>
+    <table id="tab" width="90%">
+        <tr><th>#</th><th>Title</th><th>Company</th><th>Location</th><th>Salary</th><th></th></tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><b>{{ job.title }}</b><br><small>{{ job.description }}...</small></td>
+            <td>{{ job.company }}</td>
+            <td>{{ job.location }}</td>
+            <td>{{ job.salary }}</td>
+            <td>
+                {% if job.url %}
+                    <a href="{{ job.url }}" target="_blank" rel="noopener">Apply</a>
+                {% else %}
+                    &mdash;
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </center>
+    {% else %}
+        <p style="color: red;">No matching jobs found. Try a broader role or remove the location.</p>
+    {% endif %}
+{% endif %}
+
+<br><br><br><br><br><br>
+
+{% endblock %}

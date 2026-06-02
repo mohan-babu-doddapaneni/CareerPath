@@ -30,7 +30,13 @@
 																																						<td>{{d1.education_level}}
 					
         {% endfor %}
-    
+
+<tr><td colspan=9 style="text-align:center; padding:14px;">
+    <a href="/jobsearch/?role={{ data.0.predicted_job_title|urlencode }}"
+       style="font-weight:bold; font-size:16px;">
+       &#128270; Find live job openings for "{{ data.0.predicted_job_title }}"
+    </a>
+</td></tr>
 
 <tr><td colspan=9>
 <h2><br>Relevant results<br>

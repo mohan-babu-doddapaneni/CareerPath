@@ -1,8 +1,38 @@
+import os
+import csv
 import re
+import functools
+
 import docx
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
+
+# Fallback vocabulary, used only if the dataset CSVs can't be read.
+_FALLBACK_SKILLS = ['Trello', 'PostgreSQL', 'Git', 'TypeScript', 'Asana', 'PyTorch', 'Blender', 'Pandas', 'C#', 'Flutter', 'Python', 'Jupyter', 'Unity', 'TailwindCSS', 'Truffle', 'Tableau', 'R', 'JavaScript', 'Android Studio', 'Prometheus', 'Jenkins', 'HTML', 'Scikit-Learn', 'GitHub', 'Nagios', 'Power BI', 'Azure DevOps', 'SASS', 'Agile', 'AWS Sagemaker', 'JUnit', 'Jira', 'Nginx', 'Bash', 'SQL', 'Selenium', 'React Native', 'Ruby on Rails', 'TensorFlow', 'Matplotlib', 'Firebase', 'Node.js', 'Kubernetes', 'Docker', 'Scrum', 'Figma', 'MongoDB', 'Keras', 'Redis', 'OpenCV', 'Swift', 'ASP.NET', 'Terraform', 'Ansible', 'Spring Boot', 'Kotlin', 'Express.js', 'C', 'CSS', 'Angular', 'Azure', 'AWS', 'Solidity', 'Vue', 'React', 'Java', 'Google Cloud', 'MySQL', 'Flask', 'Webpack', 'Machine Learning', 'Lua', 'Postman', 'Vite', 'Django', 'C++']
+
+
+@functools.lru_cache(maxsize=1)
+def load_skill_vocabulary():
+    """Build the skill vocabulary from the bundled datasets (deduplicated),
+    instead of a hard-coded list, so it stays in sync with the data."""
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Deduplicate case-insensitively (the datasets mix "JavaScript"/"Javascript"),
+    # keeping the first casing seen as canonical.
+    skills = {}
+    for filename, column in (("SkillsDataset.csv", "Skills"),
+                             ("career_path_dataset.csv", "Skills")):
+        path = os.path.join(base_dir, filename)
+        try:
+            with open(path, encoding="utf-8-sig") as csvfile:
+                for row in csv.DictReader(csvfile):
+                    for token in (row.get(column) or "").split(","):
+                        token = token.strip()
+                        if token:
+                            skills.setdefault(token.lower(), token)
+        except FileNotFoundError:
+            continue
+    return sorted(skills.values()) if skills else _FALLBACK_SKILLS
 
 def extract_text_from_docx(docx_path):
     
@@ -19,7 +49,7 @@ def extract_phone_number(text):
 
 
 def extract_skills(text):
-    skills_list = ['Trello', 'PostgreSQL', 'Git', 'TypeScript', 'Asana', 'PyTorch', 'Blender', 'Pandas', 'C#', 'Flutter', 'Python', 'Jupyter', 'Unity', 'TailwindCSS', 'Truffle', 'Tableau', 'R', 'JavaScript', 'Android Studio', 'Prometheus', 'Jenkins', 'HTML', 'MERN/MEAN Stack', 'Scikit-Learn', 'GitHub', 'Nagios', 'Power BI', 'Azure DevOps', 'SASS', 'Agile', 'Software Development', 'AWS Sagemaker', 'AWS Redshift', 'JUnit', 'Jira', 'Nginx', 'Bash', 'Hyperledger', 'TestNG', 'SQL', 'Selenium', 'React Native', 'GitLab CI/CD', 'Ruby on Rails', 'Unreal Engine', 'TensorFlow', 'Matplotlib', 'Firebase', 'Autodesk Maya', 'Node.js', 'Wireshark', 'Kubernetes', 'Docker', 'Scrum', 'Kali Linux', 'Figma', 'MongoDB', 'GitHub Actions', 'Keras', 'Django + React', 'Cypress', 'LAMP Stack', 'Redis', 'OpenCV', 'Swift', 'ASP.NET', 'Project Management', 'Assembly', 'Terraform', 'Ansible', 'Spring Boot', 'Kotlin', 'CI/CD Tools', 'Plastic SCM', 'Express.js', 'Adobe XD', 'C', 'CSS', 'Angular', 'Appium', 'Ethereum', 'MetaMask', 'Azure', 'AWS', 'Smart Contracts', 'Ganache', 'MVC', 'Solidity', 'Google Colab', 'Spring Boot + Angular', 'Vue', 'React', 'Java', 'Google Cloud', 'Xcode', 'Metasploit', 'MySQL', 'MS Project', 'Flask', 'Webpack', 'Machine Learning', 'Burp Suite', 'Nessus', 'Lua', 'Postman', 'Remix IDE', 'Vite', 'Django', 'C++']
+    skills_list = load_skill_vocabulary()
     # Match whole tokens only so single-letter skills like "R"/"C" don't match
     # every word, and "Java" doesn't match inside "JavaScript". The boundaries
     # treat +, # and . as part of a skill token (e.g. C++, C#, Node.js).

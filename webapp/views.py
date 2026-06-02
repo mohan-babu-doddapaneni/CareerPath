@@ -336,15 +336,19 @@ def adminlogin(request):
 def adminloginaction(request):
     userid=request.POST['aid']
     pwd=request.POST['pwd']
-    if userid=='admin' and pwd=="admin":
+    # Credentials are configurable via environment variables (default admin/admin).
+    admin_user=os.environ.get('ADMIN_USERNAME', 'admin')
+    admin_pass=os.environ.get('ADMIN_PASSWORD', 'admin')
+    if userid==admin_user and pwd==admin_pass:
         request.session['adminid']='admin'
-        #messages.success(request, "Logged in successfully!")
         return redirect("admindashboard")
     else:
         messages.error(request, "Login data is invalid !")
         return redirect("adminlogin")
 
 def admindashboard(request):
+    if 'adminid' not in request.session:
+        return redirect('adminlogin')
     return render(request, 'adminhome.html')
 
 
@@ -714,16 +718,16 @@ def viewresults(request):
 
     
 
-import csv
 def upload(request):
     if  request.method=='POST':
 
-        file_path=request.POST['file']
-        
+        # Load the bundled dataset from the project directory. Previously this
+        # opened an arbitrary path taken from the POST body (local file read).
+        file_path=os.path.join(settings.BASE_DIR, 'career_path_dataset.csv')
+
         with open(file_path, encoding="utf-8-sig") as csvfile:
             reader = csv.DictReader(csvfile)
-        
-        
+
             for row in reader:
                 dataset.objects.update_or_create(
                     job_id=row["Job_ID"],
@@ -801,6 +805,28 @@ def prediction(request):
 
 
         
-        return render(request, 'prediction.html', {'skills':skills, "education":education, "experience":experience})    
-    
+        return render(request, 'prediction.html', {'skills':skills, "education":education, "experience":experience})
+
+
+
+def job_search(request):
+    """Live job listings for a real role/location, with offline fallback."""
+    if "email" not in request.session:
+        return redirect('userlogoutdef')
+
+    role = request.GET.get('role', '').strip()
+    location = request.GET.get('location', '').strip()
+
+    jobs, source = [], ""
+    if role:
+        from .job_api import search_jobs
+        jobs, source = search_jobs(role, location)
+
+    return render(request, 'job_search.html', {
+        'jobs': jobs,
+        'source': source,
+        'role': role,
+        'location': location,
+        'searched': bool(role),
+    })
 

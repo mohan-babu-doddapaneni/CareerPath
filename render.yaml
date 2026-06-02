@@ -21,6 +21,20 @@ services:
         fromDatabase:
           name: careerpath-db
           property: connectionString
+      # Optional: enable real role + location job search via Adzuna
+      # (free key at https://developer.adzuna.com/). Without these, the Live
+      # Jobs page uses the keyless Remotive API, then local data as a fallback.
+      # - key: ADZUNA_APP_ID
+      #   sync: false
+      # - key: ADZUNA_APP_KEY
+      #   sync: false
+      # - key: ADZUNA_COUNTRY
+      #   value: "gb"
+      # Optional: override the default admin/admin credentials.
+      # - key: ADMIN_USERNAME
+      #   sync: false
+      # - key: ADMIN_PASSWORD
+      #   sync: false
 
 databases:
   - name: careerpath-db

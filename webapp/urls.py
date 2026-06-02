@@ -61,8 +61,9 @@ urlpatterns = [
     
     path('upload/', upload, name="upload"),
     path('prediction/', prediction, name="jobprediction"),
+    path('jobsearch/', job_search, name="job_search"),
 
-  
+
 
 ]
 
